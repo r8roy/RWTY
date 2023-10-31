@@ -125,6 +125,20 @@ rf.dist <- function(pair, trees){
   
 }
 
+jrf.distance <- function(tree1, tree2){
+
+  return(JaccardRobinsonFoulds(list(tree1, tree2)))
+
+}
+
+jrf.dist <- function(pair, trees){
+
+  tree1 = trees[[pair[1]]]
+  tree2 = trees[[pair[2]]]
+  return(JaccardRobinsonFoulds(list(tree1, tree2)))
+
+}
+
 path.dist.squared <- function (pair, trees, check.labels = FALSE){
   
   pd = path.dist(pair, trees, check.labels)
@@ -198,8 +212,10 @@ get.sequential.distances <- function(thinning, tree.list, N=500, squared = FALSE
     }else{
       distances <- mclapply(pairs, rf.dist, trees = tree.list, mc.cores = processors)
     }
+  }else if(treedist == 'JRF'){
+    distances <- mclapply(pairs, jrf.dist, trees = tree.list, mc.cores = processors)
   }else{
-    stop("Unknown option for treedist. Valid options are 'PD' (for path distance) or 'RF' (for Robinson Foulds distance). Please try again")
+    stop("Unknown option for treedist. Valid options are 'PD' (for path distance), 'RF' (for Robinson Foulds distance) or 'JRF' (for Jaccard-Robinson-Foulds). Please try again")
   }
   
   distances <- as.numeric(unlist(distances))
