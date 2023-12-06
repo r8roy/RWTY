@@ -227,8 +227,33 @@ wrf.dist <- function(pair, trees){
   
   tree1 = trees[[pair[1]]]
   tree2 = trees[[pair[2]]]
-  rf = wRF.dist(tree1, tree2)
-  return(rf)
+  wrf = wRF.dist(tree1, tree2)
+  return(wrf)
+  
+}
+
+kf.distance <- function(tree1, tree2){
+  pair = c(1,2)
+  trees = list(tree1, tree2)
+  
+  return(kf.dist(pair, list(tree1, tree2)))
+  
+}
+
+kf.dist.squared <- function(pair, trees){
+  
+  kf = kf.dist(pair, trees)
+  
+  return(kf*kf)
+  
+}
+
+kf.dist <- function(pair, trees){
+  
+  tree1 = trees[[pair[1]]]
+  tree2 = trees[[pair[2]]]
+  kf = KF.dist(tree1, tree2)
+  return(kf)
   
 }
 
@@ -276,6 +301,12 @@ get.sequential.distances <- function(thinning, tree.list, N=500, squared = FALSE
     }else{
       distances <- mclapply(pairs, wrf.dist, trees = tree.list, mc.cores = processors)
     }
+  }else if(treedist == 'KF'){
+    if(squared == TRUE){
+      distances <- mclapply(pairs, kf.dist.squared, trees = tree.list, mc.cores = processors)        
+    }else{
+      distances <- mclapply(pairs, kf.dist, trees = tree.list, mc.cores = processors)
+    }
   }else if(treedist == 'KC'){
     if(squared == TRUE){
       distances <- mclapply(pairs, kc.dist.squared, trees = tree.list, mc.cores = processors)
@@ -283,7 +314,7 @@ get.sequential.distances <- function(thinning, tree.list, N=500, squared = FALSE
       distances <- mclapply(pairs, kc.dist, trees = tree.list, mc.cores = processors)
     }
   }else{
-    stop("Unknown option for treedist. Valid options are 'PD' (for path distance), 'RF' (for Robinson Foulds distance), 'WRF' (for weighted RF), 'JRF' (for Jaccard-Robinson-Foulds) or 'KC' (for Kendall-Colijn). Please try again")
+    stop("Unknown option for treedist. Valid options are 'PD' (for path distance), 'RF' (for Robinson Foulds distance), 'WRF' (for weighted RF), 'JRF' (for Jaccard-Robinson-Foulds), 'KF' (for Kuhner-Felsenstein) or 'KC' (for Kendall-Colijn). Please try again")
   }
   
   distances <- as.numeric(unlist(distances))

@@ -93,8 +93,10 @@ tree.distances <- function(tree.list, i = 1, treedist = 'PD', focal.tree = NA){
         distances <- data.frame(matrix(unlist(mclapply(tree.list, kc.distance, focal.tree, mc.cores=processors)), nrow=length(tree.list), byrow=T))
     }else if(treedist == 'WRF'){
         distances <- data.frame(matrix(unlist(mclapply(tree.list, wrf.distance, focal.tree, mc.cores=processors)), nrow=length(tree.list), byrow=T))
+    }else if(treedist == 'KF'){
+        distances <- data.frame(matrix(unlist(mclapply(tree.list, kf.distance, focal.tree, mc.cores=processors)), nrow=length(tree.list), byrow=T))
     }else{
-        stop("Unknown option for treedist. Valid options are 'PD' (for path distance), 'RF' (for Robinson Foulds distance), 'WRF' (for weighted RF), 'JRF' (for Jaccard-Robinson-Foulds) or 'KC' (for Kendall-Colijn). Please try again")
+        stop("Unknown option for treedist. Valid options are 'PD' (for path distance), 'RF' (for Robinson Foulds distance), 'WRF' (for weighted RF), 'JRF' (for Jaccard-Robinson-Foulds), 'KF' (for Kuhner-Felsenstein) or 'KC' (for Kendall-Colijn). Please try again")
     }
 
     names(distances) = c("topological.distance")

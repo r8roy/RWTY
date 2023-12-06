@@ -57,8 +57,10 @@ makeplot.autocorr <- function(chains, burnin = 0, max.sampling.interval = NA, au
         td.name = "Kendall-Colijn"
     }else if(treedist=='WRF'){
         td.name = "Weighted Robinson Foulds"
+    }else if(treedist=='KF'){
+        td.name = "Kuhner-Felsenstein"
     }else{
-        stop("Unknown option for treedist. Valid options are 'PD' (for path distance), 'RF' (for Robinson Foulds distance), 'JRF' (for Jaccard-Robinson-Foulds) or 'KC' (for Kendall-Colijn). Please try again")
+        stop("Unknown option for treedist. Valid options are 'PD' (for path distance), 'RF' (for Robinson Foulds distance), 'WRF' (for weighted RF), 'JRF' (for Jaccard-Robinson-Foulds), 'KF' (for Kuhner-Felsenstein) or 'KC' (for Kendall-Colijn). Please try again")
     }
 
     if(squared == TRUE){
