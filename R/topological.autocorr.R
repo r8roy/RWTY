@@ -98,61 +98,6 @@ path.distance <- function(tree1, tree2){
   
 }
 
-
-rf.distance <- function(tree1, tree2){
-  pair = c(1,2)
-  trees = list(tree1, tree2)
-  
-  return(rf.dist(pair, list(tree1, tree2)))
-  
-}
-
-rf.dist.squared <- function(pair, trees){
-  
-  rf = rf.dist(pair, trees)
-  
-  return(rf*rf)
-  
-}
-
-
-rf.dist <- function(pair, trees){
-  
-  tree1 = trees[[pair[1]]]
-  tree2 = trees[[pair[2]]]
-  rf = RF.dist(tree1, tree2)
-  return(rf)
-  
-}
-
-jrf.distance <- function(tree1, tree2){
-
-  return(JaccardRobinsonFoulds(list(tree1, tree2)))
-
-}
-
-jrf.dist <- function(pair, trees){
-
-  tree1 = trees[[pair[1]]]
-  tree2 = trees[[pair[2]]]
-  return(JaccardRobinsonFoulds(list(tree1, tree2)))
-
-}
-
-kc.distance <- function(tree1, tree2){
-
-  return(KendallColijn(list(tree1, tree2)))
-
-}
-
-kc.dist <- function(pair, trees){
-
-  tree1 = trees[[pair[1]]]
-  tree2 = trees[[pair[2]]]
-  return(KendallColijn(list(tree1, tree2)))
-
-}
-
 path.dist.squared <- function (pair, trees, check.labels = FALSE){
   
   pd = path.dist(pair, trees, check.labels)
@@ -160,7 +105,6 @@ path.dist.squared <- function (pair, trees, check.labels = FALSE){
   return(pd*pd)
   
 }
-
 
 path.dist <- function (pair, trees, check.labels = FALSE) 
 {
@@ -192,6 +136,75 @@ path.dist <- function (pair, trees, check.labels = FALSE)
   path.difference = sqrt(sum((dt1 - dt2)^2))
   
   return(path.difference)
+}
+
+rf.distance <- function(tree1, tree2){
+  pair = c(1,2)
+  trees = list(tree1, tree2)
+  
+  return(rf.dist(pair, list(tree1, tree2)))
+  
+}
+
+rf.dist.squared <- function(pair, trees){
+  
+  rf = rf.dist(pair, trees)
+  
+  return(rf*rf)
+  
+}
+
+rf.dist <- function(pair, trees){
+  
+  tree1 = trees[[pair[1]]]
+  tree2 = trees[[pair[2]]]
+  rf = RF.dist(tree1, tree2)
+  return(rf)
+  
+}
+
+jrf.distance <- function(tree1, tree2){
+
+  return(JaccardRobinsonFoulds(list(tree1, tree2)))
+
+}
+
+jrf.dist.squared <- function(pair, trees){
+
+  jrf = jrf.dist(pair, trees)
+
+  return(jrf*jrf)
+
+}
+
+jrf.dist <- function(pair, trees){
+
+  tree1 = trees[[pair[1]]]
+  tree2 = trees[[pair[2]]]
+  return(JaccardRobinsonFoulds(list(tree1, tree2)))
+
+}
+
+kc.distance <- function(tree1, tree2){
+
+  return(KendallColijn(list(tree1, tree2)))
+
+}
+
+kc.dist.squared <- function(pair, trees) {
+
+  kc = kc.dist(pair, trees)
+  
+  return(kc*kc)
+
+}
+
+kc.dist <- function(pair, trees){
+
+  tree1 = trees[[pair[1]]]
+  tree2 = trees[[pair[2]]]
+  return(KendallColijn(list(tree1, tree2)))
+
 }
 
 
@@ -227,9 +240,17 @@ get.sequential.distances <- function(thinning, tree.list, N=500, squared = FALSE
       distances <- mclapply(pairs, rf.dist, trees = tree.list, mc.cores = processors)
     }
   }else if(treedist == 'JRF'){
-    distances <- mclapply(pairs, jrf.dist, trees = tree.list, mc.cores = processors)
+    if(squared == TRUE){
+      distances <- mclapply(pairs, jrf.dist.squared, trees = tree.list, mc.cores = processors)
+    }else{
+      distances <- mclapply(pairs, jrf.dist, trees = tree.list, mc.cores = processors)
+    }
   }else if(treedist == 'KC'){
-    distances <- mclapply(pairs, kc.dist, trees = tree.list, mc.cores = processors)
+    if(squared == TRUE){
+      distances <- mclapply(pairs, kc.dist.squared, trees = tree.list, mc.cores = processors)
+    }else{
+      distances <- mclapply(pairs, kc.dist, trees = tree.list, mc.cores = processors)
+    }
   }else{
     stop("Unknown option for treedist. Valid options are 'PD' (for path distance), 'RF' (for Robinson Foulds distance), 'JRF' (for Jaccard-Robinson-Foulds) or 'KC' (for Kendall-Colijn). Please try again")
   }
