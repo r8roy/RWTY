@@ -27,13 +27,13 @@
 #' makeplot.pseudo.ess(fungus, burnin = 20, n = 10)
 #' }
 
-makeplot.pseudo.ess <- function(chains, burnin = 0, n = 20){
+makeplot.pseudo.ess <- function(chains, burnin = 0, n = 20, treedist = "PD"){
 
     print(sprintf("Creating pseudo ESS plot"))
 
     chains <- check.chains(chains)
 
-    dat <- topological.pseudo.ess(chains, burnin, n)
+    dat <- topological.pseudo.ess(chains, burnin, n, treedist)
     
     dat <- data.frame(median.ess = apply(dat, 2, FUN = median), 
                       ci.lower = apply(dat, 2, FUN = function(x) quantile(x, .025)), 
