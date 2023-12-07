@@ -276,8 +276,24 @@ get.sequential.distances <- function(thinning, tree.list, N=500, squared = FALSE
       pairs = sample(pairs, N)
     }
   }
-  
-  if(treedist == 'PD'){
+
+  if(class(treedist) == "function"){
+    tree.dist <- function(pair, trees){
+      tree1 = trees[[pair[1]]]
+      tree2 = trees[[pair[2]]]
+      out = treedist(tree1, tree2)
+      return(out)
+    }
+    tree.dist.squared <- function(pair, trees){
+      out = tree.dist(pair, trees)
+      return(out*out)
+    }
+    if(squared == TRUE){
+      distances <- mclapply(pairs, tree.dist.squared, trees = tree.list, mc.cores = processors)        
+    }else{
+      distances <- mclapply(pairs, tree.dist, trees = tree.list, mc.cores = processors )
+    }
+  }else if(treedist == 'PD'){
     if(squared == TRUE){
       distances <- mclapply(pairs, path.dist.squared, trees = tree.list, mc.cores = processors)        
     }else{

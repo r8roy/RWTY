@@ -47,7 +47,9 @@ makeplot.autocorr <- function(chains, burnin = 0, max.sampling.interval = NA, au
 
     dat <- topological.autocorr(chains, burnin, max.sampling.interval, autocorr.intervals, squared = squared, treedist = treedist, use.all.samples = use.all.samples)
 
-    if(treedist=='RF'){
+    if(class(treedist) == "function"){
+        td.name = "User Defined"
+    }else if(treedist=='RF'){
         td.name = "Robinson Foulds"
     }else if(treedist=="PD"){
         td.name = "Path Difference"

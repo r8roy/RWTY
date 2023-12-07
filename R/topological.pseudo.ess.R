@@ -83,7 +83,9 @@ tree.distances <- function(tree.list, i = 1, treedist = 'PD', focal.tree = NA){
 
     processors = get.processors(NULL)
 
-    if(treedist == 'PD'){
+    if(class(treedist) == "function"){
+        distances <- data.frame(matrix(unlist(mclapply(tree.list, treedist, focal.tree, mc.cores=processors)), nrow=length(tree.list), byrow=T))
+    }else if(treedist == 'PD'){
         distances <- data.frame(matrix(unlist(mclapply(tree.list, path.distance, focal.tree, mc.cores=processors)), nrow=length(tree.list), byrow=T))
     }else if(treedist == 'RF'){
         distances <- data.frame(matrix(unlist(mclapply(tree.list, rf.distance, focal.tree, mc.cores=processors)), nrow=length(tree.list), byrow=T))
